@@ -6,5 +6,8 @@
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
-  "AllowedHosts": "*"
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "SimpleDelivery": "Host=localhost;Port=5432;Database=MyControl;Username=username;Password=password;Include Error Detail=true;SSL Mode=Require;Trust Server Certificate=true"
+  }
 }
