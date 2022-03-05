@@ -1,0 +1,5 @@
+1. Criando migrations em outro projeto 
+dotnet ef migrations add NewMigration --project Data --startup-project WebApi
+
+2. Atualizando a estrutura do banco
+dotnet ef database update --project Data --startup-project WebApi
