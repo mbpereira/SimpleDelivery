@@ -21,7 +21,7 @@ namespace Data.Repositories.Catalog
             await _context.Products.AddAsync(entity);
         }
 
-        public async Task DeleteById(params object[] id)
+        public async Task DeleteByKey(params object[] id)
         {
             var entity = await GetByKey(id);
             _context.Products.Remove(entity);

@@ -61,7 +61,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _products.DeleteById(id);
+                await _products.DeleteByKey(id);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
