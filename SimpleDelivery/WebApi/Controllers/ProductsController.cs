@@ -1,6 +1,5 @@
 ﻿using Data;
 using Data.Entities.Catalog;
-using Data.Repositories.Catalog;
 using Data.Repositories.Catalog.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;

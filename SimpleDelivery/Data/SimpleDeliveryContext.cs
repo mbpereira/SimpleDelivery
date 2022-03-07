@@ -1,4 +1,5 @@
 ﻿using Data.Entities.Catalog;
+using Data.Entities.Store;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data
@@ -15,5 +16,6 @@ namespace Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<StoreInfo> Stores { get; set; }
     }
 }
