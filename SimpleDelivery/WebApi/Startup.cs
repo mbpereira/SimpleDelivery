@@ -33,7 +33,7 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
-            services.AddScopedTypesByDefaultConvetion(typeof(SimpleDeliveryContext).Assembly);
+            services.AddScopedTypesByDefaultConvention(typeof(SimpleDeliveryContext).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

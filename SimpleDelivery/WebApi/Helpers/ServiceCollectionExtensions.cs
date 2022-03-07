@@ -8,7 +8,7 @@ namespace WebApi.Helpers
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddScopedTypesByDefaultConvetion(this IServiceCollection services, Assembly src)
+        public static void AddScopedTypesByDefaultConvention(this IServiceCollection services, Assembly src)
         {
             var typesWithInterfaces = src.GetTypes().Where(t => t.GetInterfaces().Length > 0);
             var typesToRegister = new Dictionary<Type, Type>();
