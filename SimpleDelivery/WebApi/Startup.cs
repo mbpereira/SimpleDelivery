@@ -1,3 +1,4 @@
+using Core;
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
             services.AddScopedTypesByDefaultConvention(typeof(SimpleDeliveryContext).Assembly);
+            services.AddScopedTypesByDefaultConvention(typeof(ThinClass).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
