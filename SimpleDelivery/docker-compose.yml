@@ -1,0 +1,12 @@
+﻿version: "3.5"
+services:
+ database:
+  image: postgres:13
+  ports:
+   - 3333:5432
+  environment:
+   - POSTGRES_PASSWORD=40028922
+ web:
+  build: .
+  ports:
+   - 9797:80
