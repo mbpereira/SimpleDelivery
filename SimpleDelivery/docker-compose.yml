@@ -1,12 +1,21 @@
-﻿version: "3.5"
+﻿version: "3.9"
 services:
  database:
+  container_name: database
   image: postgres:13
-  ports:
-   - 3333:5432
   environment:
    - POSTGRES_PASSWORD=password
+  networks:
+   - def
  web:
+  container_name: app
   build: .
   ports:
-   - 9797:80
+   - 15433:80
+  depends_on:
+   - database
+  networks:
+   - def
+networks:
+  def:
+   driver: bridge
