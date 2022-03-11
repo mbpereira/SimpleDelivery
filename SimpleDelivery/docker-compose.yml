@@ -1,10 +1,12 @@
 ﻿version: "3.9"
 services:
  database:
+  volumes:
+  - pgsql:/var/lib/postgresql/data
   container_name: database
   image: postgres:13
   environment:
-   - POSTGRES_PASSWORD=password
+   - POSTGRES_PASSWORD=123456
   networks:
    - def
  web:
@@ -19,3 +21,5 @@ services:
 networks:
   def:
    driver: bridge
+volumes:
+ pgsql:
