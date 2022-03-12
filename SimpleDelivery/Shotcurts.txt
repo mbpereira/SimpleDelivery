@@ -1,5 +1,11 @@
 1. Criando migrations em outro projeto 
-dotnet ef migrations add NewMigration --project Data --startup-project WebApi
+dotnet ef migrations add NewMigration --project ./src/Data --startup-project ./src/WebApi
 
 2. Atualizando a estrutura do banco
-dotnet ef database update --project Data --startup-project WebApi
+dotnet ef database update --project ./src/Data --startup-project ./src/WebApi
+
+4. Rollback para migration específica
+dotnet ef database update StoreInfoTableCreation --project ./src/Data --startup-project ./src/WebApi
+
+5. Remoção da última migration
+dotnet ef migrations remove --project ./src/Data --startup-project ./src/WebApi
