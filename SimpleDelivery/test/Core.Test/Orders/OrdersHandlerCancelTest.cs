@@ -76,14 +76,10 @@ namespace Core.Test.Orders
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
 
             await handler.Cancel(orders[0].Id);
-            products[0].Stock = 6;
-            products[1].Stock = 8;
-            products[2].Stock = 5;
             
-            Assert.Equal(OrderStatus.Canceled, orders[0].Status);
             Assert.Equal(6, products[0].Stock);
             Assert.Equal(8, products[1].Stock);
-            Assert.Equal(5, products[2].Stock);
+            Assert.Equal(3, products[2].Stock);
             Assert.Equal(OrderStatus.Canceled, orders[0].Status);
         }
 
