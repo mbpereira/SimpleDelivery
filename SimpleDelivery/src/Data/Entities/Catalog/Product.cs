@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entities.Catalog
 {
@@ -10,5 +11,7 @@ namespace Data.Entities.Catalog
         public string Description { get; set; }
         public decimal Cost { get; set; }
         public decimal Stock { get; set; }
+        [DefaultValue(0.0)]
+        public decimal SalePrice { get; set; }
     }
 }

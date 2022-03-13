@@ -29,7 +29,12 @@ namespace WebApi
                     Configuration.GetConnectionString("SimpleDelivery"),
                     m => m.MigrationsAssembly(typeof(SimpleDeliveryContext).Assembly.FullName));
             });
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(b =>
+                {
+                    b.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });

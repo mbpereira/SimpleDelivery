@@ -19,7 +19,7 @@ namespace Data.Entities.Sale
         [Required]
         public int OrderId { get; set; }
         [NotMapped]
-        public decimal TotalCost => UnitCost * UnitDiscount;
+        public decimal TotalCost => UnitCost * Quantity;
         [NotMapped]
         public decimal TotalDiscount => UnitDiscount * Quantity;
         [NotMapped]
