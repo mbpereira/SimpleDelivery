@@ -9,13 +9,14 @@ using Xunit;
 
 namespace Core.Test.Orders
 {
-    public class OrdersHandlerTest
+    public class OrdersHandlerCreateTest
     {
         [Fact]
         public async Task ShouldThrowsExceptionWhenProvidedDataIsNotValid()
         {
             var order = new Order()
             {
+               
                 CustomerId = 99,
                 Status = OrderStatus.Canceled,
             };
@@ -33,7 +34,7 @@ namespace Core.Test.Orders
             catch (Exception ex)
             {
                 Assert.Contains("customer id", ex.Message);
-                Assert.Contains("be canceled", ex.Message);
+                Assert.Contains("invalid status", ex.Message);
             }
         }
 
