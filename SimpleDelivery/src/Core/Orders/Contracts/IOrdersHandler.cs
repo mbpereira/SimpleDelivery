@@ -5,6 +5,9 @@ namespace Core.Orders.Contracts
 {
     public interface IOrdersHandler
     {
+        Task Cancel(int idOrder);
         Task Create(Order orde);
+        Task Delete(int idOrder);
+        Task Update(Order updatedOrder);
     }
 }

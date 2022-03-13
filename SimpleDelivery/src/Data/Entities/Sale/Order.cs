@@ -32,8 +32,9 @@ namespace Data.Entities.Sale
         public decimal TotalDiscount => Itens.Sum(i => i.TotalDiscount);
         [NotMapped]
         public decimal TotalCost => Itens.Sum(i => i.TotalCost);
-        public bool WasApproved() => new[] { OrderStatus.Approved, OrderStatus.Preparing, OrderStatus.Delivered }.Contains(Status);
+        public bool IsApproved() => new[] { OrderStatus.Approved, OrderStatus.Preparing, OrderStatus.Delivered }.Contains(Status);
         public bool IsOpen() => Status.Equals(OrderStatus.Received);
         public bool IsCanceled() => Status.Equals(OrderStatus.Canceled);
+        public bool IsFinished() => new[] { OrderStatus.Canceled, OrderStatus.Delivered }.Contains(Status);
     }
 }

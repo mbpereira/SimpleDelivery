@@ -2,6 +2,7 @@
 using Data.Repositories.Sale.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Data.Repositories.Sale
@@ -9,6 +10,10 @@ namespace Data.Repositories.Sale
     public class OrdersRepository : IOrdersRepository
     {
         private readonly SimpleDeliveryContext _context;
+        private IQueryable<Order> _query => _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Itens)
+                .ThenInclude(i => i.Product);
 
         public OrdersRepository(SimpleDeliveryContext context)
         {
@@ -28,13 +33,13 @@ namespace Data.Repositories.Sale
 
         public async Task<IList<Order>> GetAll()
         {
-            return await _context.Orders.ToListAsync();
+            return await _query.ToListAsync();
         }
 
         public async Task<Order> GetByKey(params object[] key)
         {
             var id = (int)key[0];
-            return await _context.Orders.FirstOrDefaultAsync(f => f.Id.Equals(id));
+            return await _query.FirstOrDefaultAsync(f => f.Id.Equals(id));
         }
 
         public Task Update(Order entity)
