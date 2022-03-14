@@ -55,7 +55,7 @@ namespace WebApi.Controllers
             try
             {
                 if (id != store.Id)
-                    return BadRequest("Entity mismatch");
+                    return BadRequest("Entity mismatch. Id provided on url is different of Id provided on body");
 
                 if (!TryValidateModel(store))
                     return BadRequest("Invalid data provided");

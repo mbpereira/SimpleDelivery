@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected IActionResult Error(Exception ex, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        protected IActionResult Error(Exception ex, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
         {
             var message = GetMessage(ex);
             return StatusCode(

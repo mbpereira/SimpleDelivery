@@ -13,7 +13,7 @@ namespace Core.Test.Orders
     public class OrdersHandlerUpdateTest
     {
         [Fact]
-        public async Task ShouldThrowsExceptionWhenOrderIsFinished()
+        public async Task ShouldThrowsExceptionWhenOldOrderIsFinished()
         {
             var orders = new List<Order>()
             {
@@ -44,10 +44,6 @@ namespace Core.Test.Orders
             orders[0].Status = OrderStatus.Delivered;
             ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(orders[0]));
             Assert.Contains(expected, ex.Message);
-
-            orders[0].Status = OrderStatus.Canceled;
-            ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(orders[0]));
-            Assert.Contains(expected, ex.Message);
         }
 
         [Fact]
@@ -59,15 +55,24 @@ namespace Core.Test.Orders
                 {
                     Id = 1,
                     CustomerId = 99,
-                    Status = OrderStatus.Canceled,
+                    Status = OrderStatus.Approved,
                 }
             };
-            var customers = new List<Customer>();
+            var customers = new List<Customer>()
+            {
+                new Customer()
+                {
+                    Id = 99
+                }
+            };
             var products = new List<Product>();
 
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(orders[0]));
+            var updatedOrder = orders[0].Clone();
+            updatedOrder.Status = OrderStatus.Canceled;
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(updatedOrder));
             Assert.Contains("you should use [PATCH /orders/1/cancel]", ex.Message);
         }
 

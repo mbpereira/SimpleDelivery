@@ -27,7 +27,7 @@ namespace Core.Orders
             order.CreatedAt = System.DateTime.Now.Date;
             await ValidateBasicData(order);
 
-            await UpdateStockOfNewOrderItems(order);
+            await SyncStockOfNewOrderItems(order);
 
             await _orders.Add(order);
         }
@@ -36,7 +36,7 @@ namespace Core.Orders
         {
             var order = await _orders.GetByKey(idOrder);
             await ValidateBasicData(order);
-            await Remove(order);
+            await ApplyRollback(order);
             order.Status = OrderStatus.Canceled;
             await _orders.Update(order);
         }
@@ -45,33 +45,41 @@ namespace Core.Orders
         {
             var order = await _orders.GetByKey(idOrder);
             await ValidateBasicData(order);
-            await Remove(order);
+            await ApplyRollback(order);
             await _orders.DeleteByKey(idOrder);
         }
         
         public async Task Update(Order updatedOrder)
         {
             var oldOrder = await _orders.GetByKey(updatedOrder.Id);
+            
+            await ValidateBasicData(oldOrder);
+
             oldOrder.UpdatedAt = System.DateTime.Now;
 
             if (updatedOrder.IsCanceled())
                 throw new System.Exception($"to cancel this order, you should use [PATCH /orders/{updatedOrder.Id}/cancel]");
 
-            await ValidateBasicData(oldOrder);
-
-            await UpdateStockOfNewOrderItems(updatedOrder);
-            await SyncStockOfUpdatedOrderItems(updatedOrder, oldOrder);
-            await RollbackStockOfRemovedOrderItems(updatedOrder, oldOrder);
+            await ValidateBasicData(updatedOrder);
             
-            oldOrder.CustomerId = updatedOrder.CustomerId;
-            oldOrder.ShipmentValue = updatedOrder.ShipmentValue;
-            oldOrder.Status = updatedOrder.Status;
-            oldOrder.Itens = updatedOrder.Itens;
+            await Sync(updatedOrder, oldOrder);
 
             await _orders.Update(oldOrder);
         }
 
-        private async Task UpdateStockOfNewOrderItems(Order order)
+        private async Task Sync(Order updatedOrder, Order oldOrder)
+        {
+            await SyncStockOfNewOrderItems(updatedOrder);
+            await SyncStockOfUpdatedOrderItems(updatedOrder, oldOrder);
+            await SyncStockOfRemovedOrderItems(updatedOrder, oldOrder);
+
+            oldOrder.CustomerId = updatedOrder.CustomerId;
+            oldOrder.ShipmentValue = updatedOrder.ShipmentValue;
+            oldOrder.Status = updatedOrder.Status;
+            oldOrder.Itens = updatedOrder.Itens;
+        }
+
+        private async Task SyncStockOfNewOrderItems(Order order)
         {
             var isApproved = order.IsApproved();
 
@@ -89,11 +97,11 @@ namespace Core.Orders
             }
         }
 
-        private async Task Remove(Order order)
+        private async Task ApplyRollback(Order order)
         {
             var isApproved = order.IsApproved();
             order.UpdatedAt = System.DateTime.Now.Date;
-            await RemoveItems(order.Itens, isApproved);
+            await RefillStock(order.Itens, isApproved);
         }
 
         private async Task SyncStockOfUpdatedOrderItems(Order updatedOrder, Order oldOrder)
@@ -130,7 +138,7 @@ namespace Core.Orders
             await _products.Update(product);
         }
 
-        private async Task RemoveItems(IEnumerable<OrderItem> removedItems, bool wasApproved)
+        private async Task RefillStock(IEnumerable<OrderItem> removedItems, bool wasApproved)
         {
             foreach (var item in removedItems)
             {
@@ -143,11 +151,11 @@ namespace Core.Orders
             }
         }
 
-        private async Task RollbackStockOfRemovedOrderItems(Order updatedOrder, Order oldOrder)
+        private async Task SyncStockOfRemovedOrderItems(Order updatedOrder, Order oldOrder)
         {
             var removedItems = oldOrder.Itens.Where(oldItem => !updatedOrder.Itens.Any(item => item.Id.Equals(oldItem.Id)));
             var wasApproved = oldOrder.IsApproved();
-            await RemoveItems(removedItems, wasApproved);
+            await RefillStock(removedItems, wasApproved);
         }
 
         private void ApplyDefaultValuesIfNecessary(OrderItem item, Product product)
@@ -173,6 +181,9 @@ namespace Core.Orders
 
         private async Task ValidateBasicData(Order order)
         {
+            if (order == null)
+                throw new System.Exception("Invalid order");
+
             var errs = new List<string>();
             var customer = await _customers.GetByKey(order.CustomerId);
 
