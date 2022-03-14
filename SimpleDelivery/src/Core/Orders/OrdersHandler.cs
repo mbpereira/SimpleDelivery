@@ -59,14 +59,13 @@ namespace Core.Orders
 
             await ValidateBasicData(oldOrder);
 
-            oldOrder.CustomerId = updatedOrder.CustomerId;
-            oldOrder.ShipmentValue = updatedOrder.ShipmentValue;
-            oldOrder.Status = updatedOrder.Status;
-
             await UpdateStockOfNewOrderItems(updatedOrder);
             await SyncStockOfUpdatedOrderItems(updatedOrder, oldOrder);
             await RollbackStockOfRemovedOrderItems(updatedOrder, oldOrder);
-
+            
+            oldOrder.CustomerId = updatedOrder.CustomerId;
+            oldOrder.ShipmentValue = updatedOrder.ShipmentValue;
+            oldOrder.Status = updatedOrder.Status;
             oldOrder.Itens = updatedOrder.Itens;
 
             await _orders.Update(oldOrder);
