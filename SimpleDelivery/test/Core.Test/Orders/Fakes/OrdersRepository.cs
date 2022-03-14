@@ -26,7 +26,7 @@ namespace Core.Test.Orders.Fakes
             {
                 var id = (int)key[0];
                 var index = _orders.ToList().FindIndex(p => p.Id.Equals(id));
-                if (index <= 0) return;
+                if (index < 0) return;
                 _orders.RemoveAt(index);
             });
         }
@@ -48,7 +48,7 @@ namespace Core.Test.Orders.Fakes
             return Task.Run(() =>
             {
                 var index = _orders.ToList().FindIndex(p => p.Id.Equals(entity.Id));
-                if (index <= 0)
+                if (index < 0)
                     return;
                 _orders[index] = entity;
             });

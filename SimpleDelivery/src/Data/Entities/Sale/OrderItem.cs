@@ -26,5 +26,9 @@ namespace Data.Entities.Sale
         public decimal GrossTotal => UnitPrice * Quantity;
         [NotMapped]
         public decimal NetTotal => GrossTotal - TotalDiscount;
+        public OrderItem Clone()
+        {
+            return (OrderItem)MemberwiseClone();
+        }
     }
 }

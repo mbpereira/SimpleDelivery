@@ -54,6 +54,9 @@ namespace Core.Orders
             var oldOrder = await _orders.GetByKey(updatedOrder.Id);
             oldOrder.UpdatedAt = System.DateTime.Now;
 
+            if (updatedOrder.IsCanceled())
+                throw new System.Exception($"to cancel this order, you should use [PATCH /orders/{updatedOrder.Id}/cancel]");
+
             await ValidateBasicData(oldOrder);
 
             oldOrder.CustomerId = updatedOrder.CustomerId;

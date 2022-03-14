@@ -36,5 +36,9 @@ namespace Data.Entities.Sale
         public bool IsOpen() => Status.Equals(OrderStatus.Received);
         public bool IsCanceled() => Status.Equals(OrderStatus.Canceled);
         public bool IsFinished() => new[] { OrderStatus.Canceled, OrderStatus.Delivered }.Contains(Status);
+        public Order Clone()
+        {
+            return (Order) MemberwiseClone();
+        }
     }
 }
