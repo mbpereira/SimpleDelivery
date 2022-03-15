@@ -4,7 +4,6 @@ using Data.Entities.Catalog;
 using Data.Entities.Sale;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -37,34 +36,16 @@ namespace Core.Test.Orders
             var products = new List<Product>();
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
 
-            var expected = "finished order";
-
-            Exception ex;
-
             orders[0].Status = OrderStatus.Delivered;
-            ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(orders[0]));
-            Assert.Contains(expected, ex.Message);
+            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Update(orders[0]));
+            Assert.Contains("finished order", ex.Message);
         }
 
         [Fact]
         public async Task ShouldThrowsExceptionWhenUpdatedOrderStatusIsCanceled()
         {
-            var orders = new List<Order>()
-            {
-                new Order()
-                {
-                    Id = 1,
-                    CustomerId = 99,
-                    Status = OrderStatus.Approved,
-                }
-            };
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
+            var orders = GetOrdersToValidateUpdateException();
+            var customers = GetDefaultCustomers();
             var products = new List<Product>();
 
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
@@ -76,20 +57,36 @@ namespace Core.Test.Orders
             Assert.Contains("you should use [PATCH /orders/1/cancel]", ex.Message);
         }
 
-        [Fact]
-        public async Task ShouldThrowsExceptionWhenStockIsInsufficient()
+        private static List<Order> GetOrdersToValidateUpdateException()
         {
-            var order = GetOrderToValidateInsufficientStock();
+            return new List<Order>()
+            {
+                new Order()
+                {
+                    Id = 1,
+                    CustomerId = 99,
+                    Status = OrderStatus.Approved,
+                }
+            };
+        }
 
-            var orders = new List<Order>() { order };
-            var customers = new List<Customer>()
+        private static List<Customer> GetDefaultCustomers()
+        {
+            return new List<Customer>()
             {
                 new Customer()
                 {
                     Id = 99
                 }
             };
+        }
 
+        [Fact]
+        public async Task ShouldThrowsExceptionWhenStockIsInsufficient()
+        {
+            var order = GetOrderToValidateInsufficientStock();
+            var orders = new List<Order>() { order };
+            var customers = GetDefaultCustomers();
             var products = GetProductsToValidateInsufficientStock();
 
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
@@ -144,15 +141,7 @@ namespace Core.Test.Orders
         public async Task ShouldSyncProductStock()
         {
             var itens = GetOrderItemsToValidateProductStockSync();
-            var orders = new List<Order>()
-            {
-                new Order()
-                {
-                    CustomerId = 99,
-                    Status = OrderStatus.Approved,
-                    Itens = itens
-                }
-            };
+            var orders = GetOrdersToValidateProductStockSync(itens);
             var updatedOrder = orders[0].Clone();
             updatedOrder.Itens = GetOrderItemsToValidateProductStockSync();
             updatedOrder.Itens[0].Quantity = 7;
@@ -164,13 +153,7 @@ namespace Core.Test.Orders
                 Quantity = 2
             });
 
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
+            var customers = GetDefaultCustomers();
             var products = GetProductsToValidateProductStockSync();
 
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
@@ -183,6 +166,19 @@ namespace Core.Test.Orders
             Assert.Equal(18, products[1].Stock);
             Assert.Equal(15, products[2].Stock);
             Assert.Equal(10, products[3].Stock);
+        }
+
+        private static List<Order> GetOrdersToValidateProductStockSync(List<OrderItem> itens)
+        {
+            return new List<Order>()
+            {
+                new Order()
+                {
+                    CustomerId = 99,
+                    Status = OrderStatus.Approved,
+                    Itens = itens
+                }
+            };
         }
 
         private static List<Product> GetProductsToValidateProductStockSync()

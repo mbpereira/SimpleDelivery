@@ -9,7 +9,6 @@ using Xunit;
 
 namespace Core.Test.Orders
 {
-    [Collection("OrdersHandlerTest - Cancel And Delete")]
     public class OrdersHandlerCancelAndDeleteTest
     {
         [Fact]

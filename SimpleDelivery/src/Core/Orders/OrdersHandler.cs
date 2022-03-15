@@ -24,7 +24,7 @@ namespace Core.Orders
 
         public async Task Create(Order order)
         {
-            order.CreatedAt = System.DateTime.Now.Date;
+            order.CreatedAt = System.DateTime.Now;
             await ValidateBasicData(order);
 
             await SyncStockOfNewOrderItems(order);
@@ -77,6 +77,7 @@ namespace Core.Orders
             oldOrder.ShipmentValue = updatedOrder.ShipmentValue;
             oldOrder.Status = updatedOrder.Status;
             oldOrder.Itens = updatedOrder.Itens;
+            oldOrder.Date = updatedOrder.Date;
         }
 
         private async Task SyncStockOfNewOrderItems(Order order)
@@ -101,7 +102,7 @@ namespace Core.Orders
         {
             var isApproved = order.IsApproved();
             order.UpdatedAt = System.DateTime.Now.Date;
-            await RefillStock(order.Itens, isApproved);
+            await RollbackStock(order.Itens, isApproved);
         }
 
         private async Task SyncStockOfUpdatedOrderItems(Order updatedOrder, Order oldOrder)
@@ -138,7 +139,7 @@ namespace Core.Orders
             await _products.Update(product);
         }
 
-        private async Task RefillStock(IEnumerable<OrderItem> removedItems, bool wasApproved)
+        private async Task RollbackStock(IEnumerable<OrderItem> removedItems, bool wasApproved)
         {
             foreach (var item in removedItems)
             {
@@ -155,7 +156,7 @@ namespace Core.Orders
         {
             var removedItems = oldOrder.Itens.Where(oldItem => !updatedOrder.Itens.Any(item => item.Id.Equals(oldItem.Id)));
             var wasApproved = oldOrder.IsApproved();
-            await RefillStock(removedItems, wasApproved);
+            await RollbackStock(removedItems, wasApproved);
         }
 
         private void ApplyDefaultValuesIfNecessary(OrderItem item, Product product)

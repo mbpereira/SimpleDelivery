@@ -16,7 +16,7 @@ namespace Core.Test.Orders
         {
             var order = new Order()
             {
-               
+
                 CustomerId = 99,
                 Status = OrderStatus.Canceled,
             };
@@ -27,21 +27,57 @@ namespace Core.Test.Orders
 
             var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
 
-            try
-            {
-                await handler.Create(order);
-            }
-            catch (Exception ex)
-            {
-                Assert.Contains("customer id", ex.Message);
-                Assert.Contains("invalid status", ex.Message);
-            }
+            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Create(order));
+            Assert.Contains("customer id", ex.Message);
+            Assert.Contains("invalid status", ex.Message);
         }
 
         [Fact]
         public async Task ShouldThrowsExceptionWhenStockIsInsufficient()
         {
-            var order = new Order()
+            var order = GetOrderToValidateInsufficientStock();
+
+            var orders = new List<Order>();
+            var customers = GetDefaultCustomers();
+            var products = GetProductsToValidateInsufficientStock();
+
+            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Create(order));
+            Assert.Contains("insufficient stock", ex.Message);
+        }
+
+        private static List<Product> GetProductsToValidateInsufficientStock()
+        {
+            return new List<Product>()
+            {
+                new Product()
+                {
+                    Id = 1,
+                    Stock = 1
+                },
+                new Product()
+                {
+                    Id = 2,
+                    Stock = 2
+                }
+            };
+        }
+
+        private static List<Customer> GetDefaultCustomers()
+        {
+            return new List<Customer>()
+            {
+                new Customer()
+                {
+                    Id = 99
+                }
+            };
+        }
+
+        private static Order GetOrderToValidateInsufficientStock()
+        {
+            return new Order()
             {
                 CustomerId = 99,
                 Status = OrderStatus.Approved,
@@ -59,45 +95,38 @@ namespace Core.Test.Orders
                     }
                 }
             };
-
-            var orders = new List<Order>();
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
-            var products = new List<Product>()
-            {
-                new Product()
-                {
-                    Id = 1,
-                    Stock = 1
-                },
-                new Product()
-                {
-                    Id = 2,
-                    Stock = 2
-                }
-            };
-
-            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
-
-            try
-            {
-                await handler.Create(order);
-            }
-            catch (Exception ex)
-            {
-                Assert.Contains("insufficient stock", ex.Message);
-            }
         }
 
         [Fact]
         public async Task ShouldThrowsExceptionWhenInvalidProductWasInformed()
         {
-            var order = new Order()
+            var order = GetOrderToValidateInvalidProduct();
+
+            var orders = new List<Order>();
+            var customers = GetDefaultCustomers();
+            var products = GetProductsToValidateInvalidProduct();
+
+            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => handler.Create(order));
+            Assert.Contains("invalid product", ex.Message);
+        }
+
+        private static List<Product> GetProductsToValidateInvalidProduct()
+        {
+            return new List<Product>()
+            {
+                new Product()
+                {
+                    Id = 1,
+                    Stock = 1
+                }
+            };
+        }
+
+        private static Order GetOrderToValidateInvalidProduct()
+        {
+            return new Order()
             {
                 CustomerId = 99,
                 Status = OrderStatus.Approved,
@@ -110,40 +139,44 @@ namespace Core.Test.Orders
                     }
                 }
             };
-
-            var orders = new List<Order>();
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
-            var products = new List<Product>()
-            {
-                new Product()
-                {
-                    Id = 1,
-                    Stock = 1
-                }
-            };
-
-            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
-
-            try
-            {
-                await handler.Create(order);
-            }
-            catch (Exception ex)
-            {
-                Assert.Contains("invalid product", ex.Message);
-            }
         }
 
         [Fact]
         public async Task ShouldUpdateProductStock()
         {
-            var order = new Order()
+            var order = GetOrderToValidateProductStockUpdate();
+
+            var orders = new List<Order>();
+            var customers = GetDefaultCustomers();
+            var products = GetProductsToValidateProductStockUpdate();
+
+            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
+            await handler.Create(order);
+
+            var item = order.Itens[0];
+            var product = products[0];
+            Assert.Equal(5, item.UnitCost);
+            Assert.Equal(10, item.UnitPrice);
+            Assert.Equal(0, product.Stock);
+        }
+
+        private static List<Product> GetProductsToValidateProductStockUpdate()
+        {
+            return new List<Product>()
+            {
+                new Product()
+                {
+                    Id = 1,
+                    Stock = 5,
+                    Cost = 5,
+                    SalePrice = 10
+                }
+            };
+        }
+
+        private static Order GetOrderToValidateProductStockUpdate()
+        {
+            return new Order()
             {
                 CustomerId = 99,
                 Status = OrderStatus.Approved,
@@ -156,16 +189,33 @@ namespace Core.Test.Orders
                     }
                 }
             };
+        }
+
+        [Fact]
+        public async Task ShouldGetDefaultCostAndSalePriceWhenNotProvided()
+        {
+            var order = GetOrderToValidateDefaultCostAndPrice();
 
             var orders = new List<Order>();
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
-            var products = new List<Product>()
+            var customers = GetDefaultCustomers();
+            var products = GetProductsToValidateDefaultCostAndPrice();
+
+            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
+            await handler.Create(order);
+
+            OrderItem item;
+            item = order.Itens[0];
+            Assert.Equal(5, item.UnitCost);
+            Assert.Equal(10, item.UnitPrice);
+
+            item = order.Itens[1];
+            Assert.Equal(8, item.UnitCost);
+            Assert.Equal(16, item.UnitPrice);
+        }
+
+        private static List<Product> GetProductsToValidateDefaultCostAndPrice()
+        {
+            return new List<Product>()
             {
                 new Product()
                 {
@@ -173,23 +223,20 @@ namespace Core.Test.Orders
                     Stock = 5,
                     Cost = 5,
                     SalePrice = 10
+                },
+                new Product()
+                {
+                    Id = 2,
+                    Stock = 5,
+                    Cost = 8,
+                    SalePrice = 16
                 }
             };
-
-            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
-            await handler.Create(order);
-
-            var item = order.Itens[0];
-            var product = products[0];
-            Assert.Equal(5, item.UnitCost);
-            Assert.Equal(10, item.UnitPrice);
-            Assert.Equal(0, product.Stock);
         }
 
-        [Fact]
-        public async Task ShouldGetDefaultCostAndSalePriceWhenNotProvided()
+        private static Order GetOrderToValidateDefaultCostAndPrice()
         {
-            var order = new Order()
+            return new Order()
             {
                 CustomerId = 99,
                 Status = OrderStatus.Approved,
@@ -207,44 +254,6 @@ namespace Core.Test.Orders
                     }
                 }
             };
-
-            var orders = new List<Order>();
-            var customers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    Id = 99
-                }
-            };
-            var products = new List<Product>()
-            {
-                new Product()
-                {
-                    Id = 1,
-                    Stock = 5,
-                    Cost = 5,
-                    SalePrice = 10
-                },
-                new Product()
-                {
-                    Id = 2,
-                    Stock = 5,
-                    Cost = 8,
-                    SalePrice = 16
-                }
-            };
-
-            var handler = new OrdersHandler(new OrdersRepository(orders), new CustomersRepository(customers), new ProductsRepository(products));
-            await handler.Create(order);
-
-            OrderItem item;
-            item = order.Itens[0];
-            Assert.Equal(5, item.UnitCost);
-            Assert.Equal(10, item.UnitPrice);
-
-            item = order.Itens[1];
-            Assert.Equal(8, item.UnitCost);
-            Assert.Equal(16, item.UnitPrice);
         }
     }
 }
