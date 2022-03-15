@@ -32,6 +32,10 @@ namespace Data.Entities.Sale
         public decimal TotalDiscount => Itens.Sum(i => i.TotalDiscount);
         [NotMapped]
         public decimal TotalCost => Itens.Sum(i => i.TotalCost);
+        [NotMapped]
+        public decimal Profit => Math.Round(NetTotal - TotalCost, decimals: 2);
+        [NotMapped]
+        public decimal PercProfit => Math.Round(Profit / NetTotal * 100, decimals: 2);
 
         public Order()
         {

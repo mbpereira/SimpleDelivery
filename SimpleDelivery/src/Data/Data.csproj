@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+	  <Folder Include="Migrations\RawSql\" />
   </ItemGroup>
 
   <ItemGroup>

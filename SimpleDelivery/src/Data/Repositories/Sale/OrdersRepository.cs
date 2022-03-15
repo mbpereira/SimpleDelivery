@@ -46,5 +46,10 @@ namespace Data.Repositories.Sale
         {
             return Task.Run(() => _context.Orders.Update(entity));
         }
+
+        public async Task<IList<Order>> GetByInterval(System.DateTime from, System.DateTime to)
+        {
+            return await _query.Where(o => o.Date >= from && o.Date <= to).ToListAsync();
+        }
     }
 }
