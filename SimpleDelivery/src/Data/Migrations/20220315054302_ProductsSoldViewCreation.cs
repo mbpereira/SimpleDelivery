@@ -2,10 +2,9 @@
 
 namespace Data.Migrations
 {
-    public partial class ProductsSoldFunctionCreation : Migration
+    public partial class ProductsSoldViewCreation : Migration
     {
-        private static string GetFunctionScript()
-            => @"
+        private static string GetFunctionScript() => @"
                 drop function if exists ""ProductsSold"";
                 create or replace function ""ProductsSold""
                 (
@@ -27,6 +26,9 @@ namespace Data.Migrations
 		                from	""OrderItems"" i
 			                inner join ""Products"" p on
 				                p.""Id"" = i.""ProductId""
+			                inner join ""Orders"" o on
+				                o.""Id"" = i.""OrderId""
+		                where	o.""Date"" between ""from"" and ""to""
 		                group by p.""Id"", p.""Description"";
                 end
                 $$;";

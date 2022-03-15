@@ -11,7 +11,7 @@ namespace Data.Migrations
 {
     [DbContext(typeof(SimpleDeliveryContext))]
     [Migration("20220315054302_ProductsSoldViewCreation")]
-    partial class ProductsSoldFunctionCreation
+    partial class ProductsSoldViewCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

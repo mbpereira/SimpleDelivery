@@ -19,6 +19,9 @@ begin
 		from	"OrderItems" i
 			inner join "Products" p on
 				p."Id" = i."ProductId"
+			inner join "Orders" o on
+				o."Id" = i."OrderId"
+		where	o."Date" between "from" and "to"
 		group by p."Id", p."Description";
 end
 $$;

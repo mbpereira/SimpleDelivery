@@ -13,12 +13,14 @@ namespace WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,7 +28,7 @@ namespace WebApi
             services.AddDbContext<SimpleDeliveryContext>(builder =>
             {
                 builder.UseNpgsql(
-                    Configuration.GetConnectionString("SimpleDelivery"),
+                    Configuration.GetConnectionString(GetConnectionString()),
                     m => m.MigrationsAssembly(typeof(SimpleDeliveryContext).Assembly.FullName));
             });
             services
@@ -43,15 +45,25 @@ namespace WebApi
             services.AddScopedTypesByDefaultConvention(typeof(ThinClass).Assembly);
         }
 
+        private string GetConnectionString()
+        {
+            var connection = "SimpleDeliveryDev";
+            if (Env.IsProduction())
+                connection = "SimpleDelivery";
+            return connection;
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
 
             app.UseRouting();
 
