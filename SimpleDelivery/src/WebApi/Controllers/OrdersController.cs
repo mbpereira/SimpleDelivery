@@ -4,6 +4,7 @@ using Data.Entities.Sale;
 using Data.Repositories.Sale.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers
@@ -21,6 +22,7 @@ namespace WebApi.Controllers
             _orders = orders;
         }
 
+        [ProducesResponseType(typeof(IList<Order>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -34,6 +36,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Order), statusCode: 200)]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -52,6 +55,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Order), statusCode: 200)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
@@ -70,6 +74,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpPatch("{id:int}/cancel")]
         public async Task<IActionResult> Cancel(int id)
         {
@@ -85,6 +90,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -100,6 +106,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] Order order)
         {

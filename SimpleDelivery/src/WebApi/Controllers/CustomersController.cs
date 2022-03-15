@@ -3,6 +3,8 @@ using Data.Entities.Sale;
 using Data.Repositories.Sale.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers
@@ -18,8 +20,9 @@ namespace WebApi.Controllers
             _customers = customers;
         }
 
+        [ProducesResponseType(typeof(IList<Customer>), statusCode: 200)]
         [HttpGet]
-        public async Task<IActionResult> Get(string description = null)
+        public async Task<IActionResult> Get()
         {
             try
             {
@@ -32,6 +35,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Customer), statusCode: 200)]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -49,6 +53,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -64,6 +69,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] Customer customer)
         {
@@ -85,6 +91,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Customer), statusCode: 200)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {

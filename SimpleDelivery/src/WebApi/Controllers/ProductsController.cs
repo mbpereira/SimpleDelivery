@@ -19,6 +19,7 @@ namespace WebApi.Controllers
             _products = products;
         }
 
+        [ProducesResponseType(typeof(IList<Product>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Get(string description = null)
         {
@@ -39,6 +40,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Product), statusCode: 200)]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -56,6 +58,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -71,6 +74,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
@@ -92,6 +96,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(Product), statusCode: 200)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Product product)
         {

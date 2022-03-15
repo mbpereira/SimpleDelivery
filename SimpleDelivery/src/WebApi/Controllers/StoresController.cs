@@ -3,6 +3,7 @@ using Data.Entities.Store;
 using Data.Repositories.Store.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers
@@ -18,6 +19,7 @@ namespace WebApi.Controllers
             _stores = stores;
         }
 
+        [ProducesResponseType(typeof(IList<StoreInfo>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -32,6 +34,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(typeof(StoreInfo), statusCode: 200)]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -49,6 +52,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [ProducesResponseType(statusCode: 204)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] StoreInfo store)
         {

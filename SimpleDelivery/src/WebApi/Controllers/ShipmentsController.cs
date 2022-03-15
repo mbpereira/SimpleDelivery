@@ -1,4 +1,5 @@
 ﻿using Core.Orders.Shipment.Contracts;
+using Core.Orders.Shipment.Models;
 using Data.Repositories.Store.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +18,7 @@ namespace WebApi.Controllers
             _shipmentCalculator = shipmentCalculator;
         }
 
+        [ProducesResponseType(typeof(ShipmentInfo), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string postalCode)
         {

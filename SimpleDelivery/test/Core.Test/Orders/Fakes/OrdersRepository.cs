@@ -36,6 +36,11 @@ namespace Core.Test.Orders.Fakes
             return Task.Run(() => _orders);
         }
 
+        public Task<IList<Order>> GetByInterval(System.DateTime from, System.DateTime to, OrderStatus[] status)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<Order> GetByKey(params object[] key)
         {
             var id = (int)key[0];
