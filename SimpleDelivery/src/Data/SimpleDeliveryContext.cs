@@ -25,13 +25,19 @@ namespace Data
                 .Entity<ProductSold>()
                 .HasNoKey()
                 .ToView(null);
+
+            modelBuilder
+                .Entity<CustomerPurchases>()
+                .HasNoKey()
+                .ToView(null);
         }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<StoreInfo> Stores { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Entities.Sale.Customer> Customers { get; set; }
         public DbSet<ProductSold> ProductsSold { get; set; }
+        public DbSet<CustomerPurchases> CustomerPurchases { get; set; }
     }
 }

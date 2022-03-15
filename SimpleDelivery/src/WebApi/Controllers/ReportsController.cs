@@ -43,5 +43,17 @@ namespace WebApi.Controllers
                 return Error(ex);
             }
         }
+
+        public async Task<IActionResult> BestCustomers([FromQuery] DateTime from, [FromQuery] DateTime to)
+        {
+            try
+            {
+                return Ok(await _context.CustomerPurchases.FromSqlInterpolated($"select * from \"CustomerPurchases\"({from.Date}, {to.Date})").ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return Error(ex);
+            }
+        }
     }
 }
