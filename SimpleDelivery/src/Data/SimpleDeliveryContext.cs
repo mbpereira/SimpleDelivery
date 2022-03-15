@@ -22,14 +22,25 @@ namespace Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder
+                .Ignore<ProductSold>()
                 .Entity<ProductSold>()
                 .HasNoKey()
-                .ToView(null);
+                .ToView(null)
+                .ToTable(null);
 
             modelBuilder
+                .Ignore<CustomerPurchases>()
                 .Entity<CustomerPurchases>()
                 .HasNoKey()
-                .ToView(null);
+                .ToView(null)
+                .ToTable(null);
+
+            modelBuilder
+                .Ignore<OrdersInProgress>()
+                .Entity<OrdersInProgress>()
+                .HasNoKey()
+                .ToView(null)
+                .ToTable(null);
         }
 
         public DbSet<Product> Products { get; set; }
@@ -37,7 +48,9 @@ namespace Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Entities.Sale.Customer> Customers { get; set; }
+
         public DbSet<ProductSold> ProductsSold { get; set; }
         public DbSet<CustomerPurchases> CustomerPurchases { get; set; }
+        public DbSet<OrdersInProgress> OrdersInProgress { get; set; }
     }
 }

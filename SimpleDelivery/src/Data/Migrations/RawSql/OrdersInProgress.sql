@@ -1,27 +1,29 @@
-drop function if exists "ProductsSold";
-create or replace function "ProductsSold"
+drop function if exists "OrdersInProgress";
+create or replace function "OrdersInProgress"
 (
 	"from" timestamp without time zone,
 	"to" timestamp without time zone
 )
 returns table (
-	"Id" int,
-	"Product" varchar(255),
-	"Quantity" decimal(18,2)
+	"Status" int,
+	"Description" varchar(255),
+	"Quantity" bigint
 )
 language 'plpgsql'
 as $$
 begin
 	return query
-		select	p."Id",
-			p."Description" as "Product",
-			sum(i."Quantity") as "Quantity"
-		from	"OrderItems" i
-			inner join "Products" p on
-				p."Id" = i."ProductId"
-			inner join "Orders" o on
-				o."Id" = i."OrderId"
-		where	o."Date" between "from" and "to"
-		group by p."Id", p."Description";
+		with cte as (
+			select	o."Status",
+				cast('' as varchar(255)) as "Description",
+				count(o.*) as "Quantity"
+			from	"Orders" o
+			where	o."Date" between "from" and "to"
+			group by o."Status"
+		)
+		select	*
+		from	cte
+		order by
+			"Quantity" desc;
 end
 $$;

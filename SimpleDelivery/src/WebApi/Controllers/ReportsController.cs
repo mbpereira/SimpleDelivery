@@ -55,5 +55,17 @@ namespace WebApi.Controllers
                 return Error(ex);
             }
         }
+
+        public async Task<IActionResult> OrdersInProgress([FromQuery] DateTime from, [FromQuery] DateTime to)
+        {
+            try
+            {
+                return Ok(await _context.OrdersInProgress.FromSqlInterpolated($"select * from \"OrdersInProgress\"({from.Date}, {to.Date})").ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return Error(ex);
+            }
+        }
     }
 }
