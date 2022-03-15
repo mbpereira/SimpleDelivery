@@ -25,11 +25,12 @@ namespace WebApi.Controllers
         }
 
         [ProducesResponseType(typeof(IList<SalePerformance>), statusCode: 200)]
+        [HttpGet]
         public async Task<IActionResult> Sales([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             try
             {
-                var validStatus = new OrderStatus[] { OrderStatus.Delivered };
+                var validStatus = new OrderStatus[] { OrderStatus.Approved, OrderStatus.Preparing, OrderStatus.Delivered };
                 var orders = await _orders
                     .GetByInterval(from, to, validStatus);
 
@@ -58,6 +59,7 @@ namespace WebApi.Controllers
         }
 
         [ProducesResponseType(typeof(IList<ProductSold>), statusCode: 200)]
+        [HttpGet]
         public async Task<IActionResult> BestProducts([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             try
@@ -71,6 +73,7 @@ namespace WebApi.Controllers
         }
 
         [ProducesResponseType(typeof(IList<CustomerPurchases>), statusCode: 200)]
+        [HttpGet]
         public async Task<IActionResult> BestCustomers([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             try
@@ -84,6 +87,7 @@ namespace WebApi.Controllers
         }
 
         [ProducesResponseType(typeof(IList<OrdersInProgress>), statusCode: 200)]
+        [HttpGet]
         public async Task<IActionResult> OrdersInProgress([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             try

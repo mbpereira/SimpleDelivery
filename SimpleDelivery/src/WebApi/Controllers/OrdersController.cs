@@ -91,6 +91,54 @@ namespace WebApi.Controllers
         }
 
         [ProducesResponseType(statusCode: 204)]
+        [HttpPatch("{id:int}/approve")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            try
+            {
+                await _ordersHandler.Approve(id);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Error(ex);
+            }
+        }
+
+        [ProducesResponseType(statusCode: 204)]
+        [HttpPatch("{id:int}/prepare")]
+        public async Task<IActionResult> Prepare(int id)
+        {
+            try
+            {
+                await _ordersHandler.Prepare(id);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Error(ex);
+            }
+        }
+
+        [ProducesResponseType(statusCode: 204)]
+        [HttpPatch("{id:int}/deliver")]
+        public async Task<IActionResult> Deliver(int id)
+        {
+            try
+            {
+                await _ordersHandler.Deliver(id);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Error(ex);
+            }
+        }
+
+        [ProducesResponseType(statusCode: 204)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

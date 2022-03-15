@@ -9,5 +9,8 @@ namespace Core.Orders.Contracts
         Task Create(Order orde);
         Task Delete(int idOrder);
         Task Update(Order updatedOrder);
+        Task Deliver(int id);
+        Task Prepare(int id);
+        Task Approve(int id);
     }
 }

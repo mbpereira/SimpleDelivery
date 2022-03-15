@@ -49,6 +49,30 @@ namespace Core.Orders
             await _orders.DeleteByKey(idOrder);
         }
         
+        public async Task Deliver(int id)
+        {
+            var order = await _orders.GetByKey(id);
+            var updatedOrder = order.Clone();
+            updatedOrder.Status = OrderStatus.Delivered;
+            await Update(updatedOrder);
+        }
+
+        public async Task Prepare(int id)
+        {
+            var order = await _orders.GetByKey(id);
+            var updatedOrder = order.Clone();
+            updatedOrder.Status = OrderStatus.Preparing;
+            await Update(order);
+        }
+
+        public async Task Approve(int id)
+        {
+            var order = await _orders.GetByKey(id);
+            var updatedOrder = order.Clone();
+            updatedOrder.Status = OrderStatus.Approved;
+            await Update(order);
+        }
+
         public async Task Update(Order updatedOrder)
         {
             var oldOrder = await _orders.GetByKey(updatedOrder.Id);
@@ -60,7 +84,8 @@ namespace Core.Orders
             if (updatedOrder.IsCanceled())
                 throw new System.Exception($"to cancel this order, you should use [PATCH /orders/{updatedOrder.Id}/cancel]");
 
-            await ValidateBasicData(updatedOrder);
+            var finishing = !oldOrder.IsFinished() && updatedOrder.IsFinished();
+            await ValidateBasicData(updatedOrder, finishing);
             
             await Sync(updatedOrder, oldOrder);
 
@@ -180,7 +205,7 @@ namespace Core.Orders
             ThrowExceptionIfNeed(errs);
         }
 
-        private async Task ValidateBasicData(Order order)
+        private async Task ValidateBasicData(Order order, bool finishing = false)
         {
             if (order == null)
                 throw new System.Exception("Invalid order");
@@ -194,7 +219,7 @@ namespace Core.Orders
             if(order.Id.Equals(0) && order.IsCanceled())
                 errs.Add("invalid status for new order");
 
-            if ((order.Id > 0) && order.IsFinished())
+            if (!finishing && (order.Id > 0) && order.IsFinished())
                 errs.Add("cannot change finished order");
 
             ThrowExceptionIfNeed(errs);
