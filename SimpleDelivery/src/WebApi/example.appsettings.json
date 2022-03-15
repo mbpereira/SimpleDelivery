@@ -8,6 +8,6 @@
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "SimpleDelivery": "Host=database;Port=5432;Database=SimpleDelivery;Username=username;Password=password;Include Error Detail=true;SSL Mode=Require;Trust Server Certificate=true"
+    "SimpleDelivery": "Host=database;Port=5432;Database=SimpleDelivery;Username=username;Password=password;Include Error Detail=true;"
   }
 }
