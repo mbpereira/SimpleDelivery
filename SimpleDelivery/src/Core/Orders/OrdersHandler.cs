@@ -114,10 +114,10 @@ namespace Core.Orders
                 var product = await _products.GetByKey(item.ProductId);
 
                 ValidateItem(item, product, isApproved);
+                ApplyDefaultValuesIfNecessary(item, product);
 
                 if (!isApproved) continue;
 
-                ApplyDefaultValuesIfNecessary(item, product);
                 product.Stock -= item.Quantity;
                 await UpdateProduct(product);
             }
