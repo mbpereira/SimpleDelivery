@@ -35,7 +35,9 @@ namespace Data.Entities.Sale
         [NotMapped]
         public decimal Profit => Math.Round(NetTotal - TotalCost, decimals: 2);
         [NotMapped]
-        public decimal PercProfit => Math.Round(Profit / NetTotal * 100, decimals: 2);
+        public decimal PercProfit => NetTotal > 0 
+            ? Math.Round(Profit / NetTotal * 100, decimals: 2) 
+            : 0;
 
         public Order()
         {
