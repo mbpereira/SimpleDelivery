@@ -62,7 +62,7 @@ namespace Core.Orders
             var order = await _orders.GetByKey(id);
             var updatedOrder = order.Clone();
             updatedOrder.Status = OrderStatus.Preparing;
-            await Update(order);
+            await Update(updatedOrder);
         }
 
         public async Task Approve(int id)
@@ -70,7 +70,7 @@ namespace Core.Orders
             var order = await _orders.GetByKey(id);
             var updatedOrder = order.Clone();
             updatedOrder.Status = OrderStatus.Approved;
-            await Update(order);
+            await Update(updatedOrder);
         }
 
         public async Task Update(Order updatedOrder)
