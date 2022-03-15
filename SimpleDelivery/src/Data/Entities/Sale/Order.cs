@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Data.Entities.Sale
         public DateTime? UpdatedAt { get; set; }
         [Required]
         public decimal ShipmentValue { get; set; }
-        [Required]
+        [Required, DefaultValue(OrderStatus.Received)]
         public OrderStatus Status { get; set; }
         public Customer Customer { get; set; }
         [Required]
@@ -38,12 +39,6 @@ namespace Data.Entities.Sale
         public decimal PercProfit => NetTotal > 0 
             ? Math.Round(Profit / NetTotal * 100, decimals: 2) 
             : 0;
-
-        public Order()
-        {
-            Status = OrderStatus.Received;
-        }
-
         public bool IsApproved() => new[] { OrderStatus.Approved, OrderStatus.Preparing, OrderStatus.Delivered }.Contains(Status);
         public bool IsOpen() => Status.Equals(OrderStatus.Received);
         public bool IsCanceled() => Status.Equals(OrderStatus.Canceled);
