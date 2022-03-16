@@ -148,10 +148,10 @@ namespace Core.Orders
                 }
 
                 ValidateItem(updatedOrderItem, newProduct, isApproved);
+                ApplyDefaultValuesIfNecessary(updatedOrderItem, newProduct);
 
                 if (!isApproved) continue;
 
-                ApplyDefaultValuesIfNecessary(updatedOrderItem, newProduct);
                 newProduct.Stock -= updatedOrderItem.Quantity;
                 await UpdateProduct(newProduct);
             }
