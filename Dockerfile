@@ -10,4 +10,4 @@ RUN dotnet publish -c release -o publish --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "WebApi.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet WebApi.dll
