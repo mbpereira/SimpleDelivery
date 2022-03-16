@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:WebApi.Controllers.OrdersController.Post(Data.Entities.Sale.Order)">
+            <summary>
+            Cria um novo pedido.
+            Obs.: 
+            *Não é possível gerar um pedido com status Cancelado;
+            *Apenas pedidos aprovados (Aprovado, Em Preparo, Entregue) movimentam estoque;
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Cancel(System.Int32)">
+            <summary>
+            Marca um pedido como cancelado. 
+            Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Approve(System.Int32)">
+            <summary>
+            Marca um pedido como aprovado. 
+            Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Prepare(System.Int32)">
+            <summary>
+            Marca um pedido como em preparo. 
+            Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Deliver(System.Int32)">
+            <summary>
+            Marca um pedido como entregue. 
+            Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Delete(System.Int32)">
+            <summary>
+            Apaga um pedido. 
+            Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.OrdersController.Put(System.Int32,Data.Entities.Sale.Order)">
+            <summary>
+            Atualiza um pedido. 
+            Obs.: 
+            *Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados);
+            *Este endpoint não permite o cancelamento de um pedido. Para isso, utilize:
+            PATCH api/Orders/{id}/cancel;
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ReportsController.Sales(System.DateTime,System.DateTime)">
+            <summary>
+            Retorna as vendas (Aprovadas, Em Preparo, Entregues) com suas respectivas margens de lucro.
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ReportsController.BestProducts(System.DateTime,System.DateTime)">
+            <summary>
+            Retorna a quantidade vendida dos protudos. Apenas os pedidos Aprovados, Em Preparo e Entregues são considerados.
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ReportsController.BestCustomers(System.DateTime,System.DateTime)">
+            <summary>
+            Retorna os clientes e a quantidade de compras realizadas por cada um. Apenas os pedidos Aprovados, Em Preparo e Entregues são considerados.
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ShipmentsController.Get(System.String)">
+            <summary>
+            Retorna o valor de frete e os detalhes da origem x destino. 
+            Por padrão, o cálculo é realizado levando em consideração a loja padrão (Código 1),
+            cuja sede está localizada no Rio de Janeiro.
+            As informações dessa loja podem ser consultadas através de uma requisição GET, no endereço
+            api/Stores/1. Ex.: GET api/Stores/1
+            </summary>
+            <param name="postalCode">Cep destino</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

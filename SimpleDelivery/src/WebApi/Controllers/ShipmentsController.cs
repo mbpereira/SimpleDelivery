@@ -18,6 +18,15 @@ namespace WebApi.Controllers
             _shipmentCalculator = shipmentCalculator;
         }
 
+        /// <summary>
+        /// Retorna o valor de frete e os detalhes da origem x destino. 
+        /// Por padrão, o cálculo é realizado levando em consideração a loja padrão (Código 1),
+        /// cuja sede está localizada no Rio de Janeiro.
+        /// As informações dessa loja podem ser consultadas através de uma requisição GET, no endereço
+        /// api/Stores/1. Ex.: GET api/Stores/1
+        /// </summary>
+        /// <param name="postalCode">Cep destino</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(ShipmentInfo), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string postalCode)

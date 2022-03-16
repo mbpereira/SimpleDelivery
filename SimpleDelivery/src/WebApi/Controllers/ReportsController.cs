@@ -24,6 +24,12 @@ namespace WebApi.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna as vendas (Aprovadas, Em Preparo, Entregues) com suas respectivas margens de lucro.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(IList<SalePerformance>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> Sales([FromQuery] DateTime from, [FromQuery] DateTime to)
@@ -58,6 +64,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna a quantidade vendida dos protudos. Apenas os pedidos Aprovados, Em Preparo e Entregues são considerados.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(IList<ProductSold>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> BestProducts([FromQuery] DateTime from, [FromQuery] DateTime to)
@@ -72,6 +84,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna os clientes e a quantidade de compras realizadas por cada um. Apenas os pedidos Aprovados, Em Preparo e Entregues são considerados.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(IList<CustomerPurchases>), statusCode: 200)]
         [HttpGet]
         public async Task<IActionResult> BestCustomers([FromQuery] DateTime from, [FromQuery] DateTime to)

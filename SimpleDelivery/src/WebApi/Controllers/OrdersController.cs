@@ -55,6 +55,14 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Cria um novo pedido.
+        /// Obs.: 
+        /// *Não é possível gerar um pedido com status Cancelado;
+        /// *Apenas pedidos aprovados (Aprovado, Em Preparo, Entregue) movimentam estoque;
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Order), statusCode: 200)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
@@ -74,6 +82,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Marca um pedido como cancelado. 
+        /// Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpPatch("{id:int}/cancel")]
         public async Task<IActionResult> Cancel(int id)
@@ -90,6 +104,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Marca um pedido como aprovado. 
+        /// Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpPatch("{id:int}/approve")]
         public async Task<IActionResult> Approve(int id)
@@ -106,6 +126,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Marca um pedido como em preparo. 
+        /// Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpPatch("{id:int}/prepare")]
         public async Task<IActionResult> Prepare(int id)
@@ -122,6 +148,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Marca um pedido como entregue. 
+        /// Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpPatch("{id:int}/deliver")]
         public async Task<IActionResult> Deliver(int id)
@@ -138,6 +170,12 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Apaga um pedido. 
+        /// Obs.: Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
@@ -154,6 +192,15 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza um pedido. 
+        /// Obs.: 
+        /// *Não é permitido modificar o status de pedidos já finalizados (Entregues, Cancelados);
+        /// *Este endpoint não permite o cancelamento de um pedido. Para isso, utilize:
+        /// PATCH api/Orders/{id}/cancel;
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ProducesResponseType(statusCode: 204)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] Order order)
